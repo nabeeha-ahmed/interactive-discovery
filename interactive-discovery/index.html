@@ -1,0 +1,344 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>The Tell-Tale Heart: An Interactive Investigation</title>
+  <meta name="description" content="A point-and-click mystery based on Poe's 1843 story. Search the old man's bedroom, question the man who answered the door, and listen for the heartbeat.">
+  <meta property="og:title" content="The Tell-Tale Heart: An Interactive Investigation">
+  <meta property="og:description" content="Search the old man's bedroom, question the man who answered the door, and listen for the heartbeat. Inspired by the tale by Edgar Allan Poe, 1843.">
+  <meta property="og:type" content="website">
+  <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;1,400&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <!-- Gameplay header: hidden on the arrival screen -->
+  <header class="site-header" id="site-header" hidden>
+    <h1 class="site-title">The Tell-Tale Heart</h1>
+    <div class="header-controls">
+      <button type="button" class="btn btn-quiet" id="sound-btn">Sound: On</button>
+      <button type="button" class="btn btn-quiet" id="restart-btn">Restart</button>
+      <div class="restart-confirm" id="restart-confirm" role="group" aria-labelledby="restart-question" hidden>
+        <span id="restart-question">Restart the investigation? Your progress will be lost.</span>
+        <button type="button" class="btn btn-quiet" id="restart-yes">Yes, restart</button>
+        <button type="button" class="btn btn-quiet" id="restart-no">Cancel</button>
+      </div>
+    </div>
+  </header>
+
+  <main class="game-container">
+
+    <!-- STATE 1: Arrival at the house -->
+    <section class="scene" id="scene-arrival" aria-labelledby="arrival-title">
+      <div class="title-block">
+        <h1 id="arrival-title" tabindex="-1">The Tell-Tale Heart</h1>
+        <p class="byline">Inspired by the world-renowned tale by Edgar Allan Poe, 1843</p>
+      </div>
+
+      <div class="frame house-frame">
+        <svg class="art-svg" viewBox="0 0 1200 640" aria-labelledby="house-svg-title house-svg-desc">
+          <title id="house-svg-title">The old house on the corner</title>
+          <desc id="house-svg-desc">A crooked Victorian house at night under a pale moon. One upstairs window glows faintly. A path leads to the front door.</desc>
+          <defs>
+            <filter id="rough-house" x="-2%" y="-2%" width="104%" height="104%">
+              <feTurbulence type="fractalNoise" baseFrequency="0.035" numOctaves="2" seed="4" result="noise"/>
+              <feDisplacementMap in="SourceGraphic" in2="noise" scale="5" xChannelSelector="R" yChannelSelector="G"/>
+            </filter>
+          </defs>
+
+          <g filter="url(#rough-house)">
+            <!-- sky and moon -->
+            <rect width="1200" height="640" fill="#221812"/>
+            <circle cx="1010" cy="112" r="40" fill="#D8CDB6" opacity="0.85"/>
+            <circle cx="996" cy="104" r="7" fill="#C4B89F"/>
+            <circle cx="1022" cy="126" r="5" fill="#C4B89F"/>
+
+            <!-- bare tree -->
+            <g stroke="#120C09" stroke-linecap="round" fill="none">
+              <path d="M170 540 L178 420 L168 330 L182 250" stroke-width="14"/>
+              <path d="M176 400 L122 336 L96 318" stroke-width="7"/>
+              <path d="M172 336 L224 278 L258 266" stroke-width="6"/>
+              <path d="M180 270 L150 214" stroke-width="5"/>
+              <path d="M124 338 L110 296" stroke-width="4"/>
+              <path d="M222 280 L236 236" stroke-width="4"/>
+            </g>
+
+            <!-- ground and path -->
+            <path d="M0 520 C200 510 380 528 600 520 C820 512 1000 526 1200 514 L1200 640 L0 640 Z" fill="#2A1D16"/>
+            <path d="M548 640 L656 640 L630 536 L578 536 Z" fill="#4A3A2E"/>
+
+            <!-- chimney (behind roof) -->
+            <path d="M716 124 L756 120 L758 214 L714 218 Z" fill="#1C1511"/>
+            <path d="M710 116 L762 112 L764 124 L708 128 Z" fill="#2A1E17"/>
+
+            <!-- house body -->
+            <path d="M362 262 L842 254 L848 526 L356 530 Z" fill="#4A3F35"/>
+            <!-- clapboard lines -->
+            <g stroke="#40362D" stroke-width="2">
+              <path d="M362 300 L844 292"/>
+              <path d="M361 340 L845 333"/>
+              <path d="M360 390 L846 384"/>
+              <path d="M359 440 L846 436"/>
+              <path d="M358 486 L847 482"/>
+            </g>
+
+            <!-- roof -->
+            <path d="M326 272 L598 88 L878 262 L860 274 L598 110 L344 284 Z" fill="#17110D"/>
+            <path d="M344 270 L598 104 L860 260 Z" fill="#231A15"/>
+            <path d="M420 222 L780 216 M470 186 L730 184 M520 152 L680 150" stroke="#2E231C" stroke-width="3"/>
+
+            <!-- attic window -->
+            <circle cx="600" cy="208" r="22" fill="#15100C"/>
+            <path d="M600 186 L600 230 M578 208 L622 208" stroke="#2A1E17" stroke-width="4"/>
+
+            <!-- upstairs left window, one shutter hanging crooked -->
+            <path d="M428 302 L502 300 L504 384 L427 386 Z" fill="#2A1E17"/>
+            <path d="M436 310 L496 308 L497 378 L435 380 Z" fill="#15100C"/>
+            <path d="M466 309 L466 379 M435 344 L497 343" stroke="#2A1E17" stroke-width="4"/>
+            <path d="M404 304 L426 306 L422 390 L398 384 Z" fill="#2B2420"/>
+
+            <!-- upstairs right window: the dimly lit bedroom -->
+            <path d="M698 298 L772 296 L774 380 L697 382 Z" fill="#2A1E17"/>
+            <path d="M706 306 L766 304 L767 374 L705 376 Z" fill="#9C7C4A" opacity="0.75"/>
+            <path d="M736 305 L736 375 M705 340 L767 339" stroke="#2A1E17" stroke-width="4"/>
+
+            <!-- ground floor window -->
+            <path d="M418 420 L492 418 L494 494 L417 496 Z" fill="#2A1E17"/>
+            <path d="M426 428 L486 426 L487 488 L425 490 Z" fill="#15100C"/>
+            <path d="M456 427 L456 489 M425 458 L487 457" stroke="#2A1E17" stroke-width="4"/>
+
+            <!-- front door -->
+            <path d="M556 398 L604 372 L650 396 Z" fill="#231A15"/>
+            <path d="M564 400 L640 398 L642 528 L562 530 Z" fill="#2A1E17"/>
+            <path d="M574 410 L630 408 L632 526 L572 528 Z" fill="#3A2A20"/>
+            <path d="M582 420 L622 419 L622 462 L582 463 Z M582 474 L623 473 L624 516 L582 517 Z" fill="#33251C"/>
+            <circle cx="620" cy="470" r="4" fill="#9C8A64"/>
+
+            <!-- step -->
+            <path d="M548 528 L656 526 L660 540 L544 542 Z" fill="#3F3128"/>
+
+            <!-- fence posts -->
+            <g fill="#1C1511">
+              <path d="M860 520 L868 470 L876 520 Z"/>
+              <path d="M910 518 L918 474 L926 518 Z"/>
+              <path d="M960 516 L968 468 L976 516 Z"/>
+              <path d="M1010 518 L1018 476 L1026 518 Z"/>
+              <path d="M856 498 L1030 494 L1030 500 L856 504 Z"/>
+            </g>
+          </g>
+
+          <!-- clickable front door -->
+          <g class="hotspot is-lead" id="house-door" role="button" tabindex="0" aria-label="Front door. Enter the house">
+            <title>Enter the house</title>
+            <path class="hit" d="M548 364 L656 364 L660 544 L544 544 Z"/>
+          </g>
+        </svg>
+      </div>
+
+      <div class="panel">
+        <p>It is a little past four in the morning. A neighbour has reported a scream from the old house on the corner. You are a detective, sent with three police officers to search the premises.</p>
+        <p>The man who answers the door insists that everything is fine. He says the old man who lives here has gone to the country.</p>
+        <p>In that case, who is the man who answered the door?</p>
+        <p class="hint">Click the outlined door to get started.</p>
+      </div>
+
+      <!-- Opens when the front door is clicked, before entering the house -->
+      <dialog class="how-to" id="how-to" aria-labelledby="how-to-title">
+        <h2 id="how-to-title">How to Play</h2>
+        <p>Find out where the old man is. Search his bedroom one clue at a time. The next clue is always outlined in the room.</p>
+        <p>Ask the man who answered the door about each clue, then decide whether to believe him or confront him. Believe him too easily, and the case goes unsolved.</p>
+        <div class="actions">
+          <button type="button" class="btn btn-primary" id="how-to-enter">Enter the house</button>
+          <button type="button" class="btn-text" id="how-to-back">Not yet</button>
+        </div>
+      </dialog>
+    </section>
+
+    <!-- STATES 2 to 6: the bedroom -->
+    <section class="scene" id="scene-room" aria-label="The old man's bedroom" hidden>
+      <div class="frame room-frame" id="room-frame">
+        <svg class="art-svg" viewBox="0 0 1200 680" aria-labelledby="room-svg-title room-svg-desc">
+          <title id="room-svg-title">The old man's bedroom</title>
+          <desc id="room-svg-desc">A dark Victorian bedroom. An old wooden door stands on the left. A dark lantern rests on a stool. Barred shutters cover the window. A painting of a pale eye hangs on the wall. A white bed stands on the right, and three floorboards near it sit unevenly.</desc>
+          <defs>
+            <filter id="rough-room" x="-2%" y="-2%" width="104%" height="104%">
+              <feTurbulence type="fractalNoise" baseFrequency="0.035" numOctaves="2" seed="7" result="noise"/>
+              <feDisplacementMap in="SourceGraphic" in2="noise" scale="5" xChannelSelector="R" yChannelSelector="G"/>
+            </filter>
+          </defs>
+
+          <g filter="url(#rough-room)">
+            <!-- ceiling and back wall -->
+            <path d="M0 0 H1200 V36 L640 42 L0 48 Z" fill="#43382E"/>
+            <path d="M0 48 L640 42 L1200 36 L1200 456 L0 476 Z" fill="#5A4D3F"/>
+
+            <!-- cracks, nail and old picture mark -->
+            <g stroke="#4A3F34" stroke-width="3" fill="none" stroke-linecap="round">
+              <path d="M300 60 L312 92 L304 120 L318 152"/>
+              <path d="M1040 70 L1030 104 L1046 132 L1038 160"/>
+              <path d="M884 330 L900 346 L896 372"/>
+            </g>
+            <path d="M960 120 L1060 118 L1062 200 L962 204 Z" fill="none" stroke="#524538" stroke-width="4"/>
+            <circle cx="1010" cy="100" r="3" fill="#2A1E17"/>
+
+            <!-- the strange elongated shadow -->
+            <path d="M694 90 C682 90 678 108 682 128 C674 160 672 260 676 360 C678 410 684 444 690 460 L714 458 C718 430 720 380 718 300 C718 220 714 156 708 128 C712 108 706 90 694 90 Z" fill="#463B30"/>
+
+            <!-- floor -->
+            <path d="M0 476 L1200 456 L1200 680 L0 680 Z" fill="#503426"/>
+            <path stroke="#3B261B" stroke-width="3" fill="none" d="M-150 478 L-450 680 M-100 478 L-380 680 M-50 477 L-310 680 M0 476 L-240 680 M50 475 L-170 680 M100 474 L-100 680 M150 474 L-30 680 M200 473 L40 680 M250 472 L110 680 M300 471 L180 680 M350 470 L250 680 M400 469 L320 680 M450 468 L390 680 M500 468 L460 680 M550 467 L530 680 M600 466 L600 680 M650 465 L670 680 M700 464 L740 680 M750 464 L810 680 M800 463 L880 680 M850 462 L950 680 M900 461 L1020 680 M950 460 L1090 680 M1000 459 L1160 680 M1050 458 L1230 680 M1100 458 L1300 680 M1150 457 L1370 680 M1200 456 L1440 680"/>
+            <!-- plank ends -->
+            <path stroke="#3B261B" stroke-width="3" d="M66 560 L138 560 M262 610 L330 610 M420 530 L478 530 M532 640 L598 640 M920 520 L986 520 M1060 600 L1140 600"/>
+            <!-- skirting board -->
+            <path d="M0 466 L1200 446 L1200 460 L0 480 Z" fill="#3F3128"/>
+
+            <!-- door, frame and latch -->
+            <path d="M58 116 L264 110 L268 474 L54 478 Z" fill="#2A1E17"/>
+            <path d="M76 132 L246 127 L249 466 L72 470 Z" fill="#3A2A20"/>
+            <path d="M94 154 L228 150 L229 288 L95 292 Z M96 314 L230 310 L232 444 L97 448 Z" fill="#33251C" stroke="#2A1E17" stroke-width="3"/>
+            <path d="M246 128 L249 466" stroke="#120C09" stroke-width="4"/>
+            <path d="M214 292 L234 291 L235 316 L215 317 Z" fill="#6E6048"/>
+            <circle cx="225" cy="304" r="6" fill="#9C8A64"/>
+
+            <!-- window with barred shutters -->
+            <path d="M432 98 L648 94 L652 336 L428 340 Z" fill="#2A1E17"/>
+            <path d="M446 110 L538 108 L540 326 L444 328 Z M544 108 L634 106 L636 322 L546 326 Z" fill="#2B2420"/>
+            <path stroke="#3A322B" stroke-width="3" d="M448 130 L536 128 M448 152 L536 150 M448 174 L537 172 M448 196 L537 194 M447 240 L538 238 M447 262 L538 260 M447 284 L539 282 M446 306 L539 304 M548 128 L632 126 M548 150 L632 148 M548 172 L633 170 M548 194 L633 192 M548 238 L634 236 M548 260 L634 258 M548 282 L635 280 M548 304 L635 302"/>
+            <path d="M436 208 L644 202 L645 216 L437 222 Z" fill="#1A1410"/>
+            <circle cx="541" cy="212" r="7" fill="#6E6048"/>
+            <path d="M416 336 L664 332 L668 348 L412 352 Z" fill="#3F3128"/>
+
+            <!-- the painted eye -->
+            <path d="M720 172 Q790 118 864 166 Q794 218 720 172 Z" fill="#E7D8BC" stroke="#241913" stroke-width="4"/>
+            <circle cx="791" cy="169" r="23" fill="#8FA3AD"/>
+            <circle cx="791" cy="169" r="9" fill="#17100D"/>
+            <ellipse cx="788" cy="164" rx="30" ry="15" fill="#E4E7E2" opacity="0.5"/>
+            <path stroke="#241913" stroke-width="3" stroke-linecap="round" d="M748 140 L742 128 M772 132 L770 118 M798 130 L800 116 M824 136 L830 124"/>
+
+            <!-- the beam from the lantern, shown after asking about it -->
+            <path class="beam" d="M341 456 L788 164 L792 176 L343 462 Z" fill="#D9B66A" opacity="0.32"/>
+
+            <!-- stool and dark lantern -->
+            <path d="M298 500 L392 496 L394 510 L296 514 Z" fill="#2E2119"/>
+            <path d="M306 512 L314 580 M384 508 L380 576 M330 512 L332 566 M362 510 L362 562" stroke="#2E2119" stroke-width="7"/>
+            <circle cx="340" cy="398" r="10" fill="none" stroke="#2C2824" stroke-width="5"/>
+            <path d="M312 432 L340 406 L368 430 Z" fill="#2C2824"/>
+            <path d="M318 430 L364 428 L366 498 L316 500 Z" fill="#2C2824"/>
+            <path d="M318 444 L364 442 M318 486 L365 484" stroke="#4A443C" stroke-width="3"/>
+            <path d="M328 450 L354 449 L355 482 L329 483 Z" fill="#1C1814"/>
+            <path d="M339 452 L343 452 L343 480 L339 480 Z" fill="#D9B66A"/>
+
+            <!-- the bed -->
+            <path d="M870 604 L1180 566 L1182 612 L880 642 Z" fill="#2A1C15"/>
+            <path d="M1140 298 L1174 294 L1178 566 L1146 572 Z" fill="#3A2A20"/>
+            <circle cx="1157" cy="290" r="10" fill="#3A2A20"/>
+            <path d="M900 402 L1150 384 L1164 452 L886 476 Z" fill="#E4DCCB"/>
+            <path d="M886 476 L1164 452 L1168 522 L884 550 Z" fill="#D6CCB8"/>
+            <path d="M902 432 L1150 416 M890 506 L1166 482" stroke="#C4B9A3" stroke-width="3"/>
+            <ellipse cx="1090" cy="404" rx="50" ry="16" fill="#F1EADC" stroke="#C4B9A3" stroke-width="3"/>
+            <path d="M870 380 L902 376 L904 604 L874 610 Z" fill="#3A2A20"/>
+            <circle cx="886" cy="372" r="9" fill="#3A2A20"/>
+            <path d="M1166 520 L1168 600" stroke="#3A2A20" stroke-width="10"/>
+            <!-- scrape marks where the bed was dragged -->
+            <path d="M846 600 L800 612 M850 618 L812 630" stroke="#6B4A36" stroke-width="2"/>
+
+            <!-- the disturbed floorboards -->
+            <g class="planks">
+              <path d="M647 556 L705 556 L721 650 L654 650 Z" fill="#583A2B" stroke="#1E130E" stroke-width="3"/>
+              <path class="plank-mid" d="M705 552 L764 552 L788 648 L721 648 Z" fill="#5E3E2D" stroke="#1E130E" stroke-width="3"/>
+              <path d="M764 556 L823 556 L856 650 L788 650 Z" fill="#4C3022" stroke="#1E130E" stroke-width="3"/>
+              <path class="plank-mid" d="M707 553 L762 553" stroke="#7A5640" stroke-width="3"/>
+              <g fill="#2A1C15">
+                <circle cx="660" cy="566" r="3"/><circle cx="694" cy="566" r="3"/>
+                <circle cx="733" cy="563" r="3"/><circle cx="776" cy="566" r="3"/>
+                <circle cx="812" cy="566" r="3"/><circle cx="668" cy="638" r="3"/>
+                <circle cx="842" cy="640" r="3"/>
+              </g>
+            </g>
+
+            <!-- revealed: the middle plank lifted -->
+            <g class="reveal-open">
+              <path d="M705 556 L764 556 L788 650 L721 650 Z" fill="#0E0907"/>
+              <path d="M712 590 L772 588 L775 600 L714 602 Z" fill="#2E1E16"/>
+              <path d="M720 618 Q744 606 774 612 L784 648 L724 650 Z" fill="#A89C86"/>
+              <path d="M690 548 L750 538 L780 626 L712 638 Z" fill="#6B4A36" stroke="#1E130E" stroke-width="3"/>
+              <path d="M712 638 L780 626 L782 634 L714 646 Z" fill="#3B261B"/>
+            </g>
+
+            <!-- confession: all three planks taken up -->
+            <g class="reveal-all">
+              <path d="M647 556 L823 556 L856 650 L654 650 Z" fill="#0E0907"/>
+              <path d="M652 590 L834 586 L838 598 L654 602 Z" fill="#2E1E16"/>
+              <path d="M670 616 Q736 596 806 606 Q834 612 846 648 L670 650 Z" fill="#A89C86"/>
+              <path d="M520 632 L630 618 L634 632 L524 646 Z M512 650 L626 640 L628 654 L514 664 Z" fill="#6B4A36" stroke="#1E130E" stroke-width="3"/>
+            </g>
+          </g>
+
+          <!-- heartbeat outline, kept outside the texture filter so it animates cheaply -->
+          <path class="pulse" d="M647 556 L823 556 L856 650 L654 650 Z"/>
+
+          <!-- clickable areas, larger than the objects so small things are easy to tap -->
+          <g class="hotspot" data-object="door" role="button" tabindex="0" aria-label="Examine the bedroom door">
+            <title>The bedroom door</title>
+            <path class="hit" d="M46 104 L276 100 L278 488 L44 492 Z"/>
+          </g>
+          <g class="hotspot" data-object="lantern" role="button" tabindex="0" aria-label="Examine the lantern">
+            <title>The lantern</title>
+            <path class="hit" d="M286 378 L402 378 L402 584 L286 584 Z"/>
+          </g>
+          <g class="hotspot" data-object="shutters" role="button" tabindex="0" aria-label="Examine the shutters">
+            <title>The shutters</title>
+            <path class="hit" d="M420 88 L660 84 L670 356 L408 360 Z"/>
+          </g>
+          <g class="hotspot" data-object="eye" role="button" tabindex="0" aria-label="Examine the painting of an eye">
+            <title>The painted eye</title>
+            <path class="hit" d="M706 108 L878 108 L878 228 L706 228 Z"/>
+          </g>
+          <g class="hotspot" data-object="bed" role="button" tabindex="0" aria-label="Examine the bed">
+            <title>The bed</title>
+            <path class="hit" d="M862 282 L1188 278 L1190 626 L866 640 Z"/>
+          </g>
+          <g class="hotspot" data-object="floorboards" role="button" tabindex="0" aria-label="Examine the floorboards">
+            <title>The floorboards</title>
+            <path class="hit" d="M634 540 L836 540 L870 664 L640 664 Z"/>
+          </g>
+        </svg>
+      </div>
+
+      <section class="panel" id="panel" aria-labelledby="panel-heading">
+        <div id="panel-body"></div>
+        <div class="panel-footer">
+          <button type="button" class="btn-text" id="leave-btn">Leave the house</button>
+        </div>
+      </section>
+    </section>
+
+    <!-- STATE 6 conclusion: ending screen (the house illustration is moved here by script.js) -->
+    <section class="scene" id="scene-ending" aria-labelledby="ending-title" hidden>
+      <div class="panel ending">
+        <!-- Filled in by script.js: solved or unsolved -->
+        <h2 id="ending-title" tabindex="-1">Case Closed</h2>
+        <div id="ending-body"></div>
+        <p class="attribution">Adapted from "The Tell-Tale Heart" by Edgar Allan Poe, first published in 1843. The original story is in the <a href="https://poemuseum.org/the-tell-tale-heart/" target="_blank" rel="noopener">public domain</a>. The text in this game paraphrases and adapts it. <a href="https://pixabay.com/sound-effects/film-special-effects-intense-cinematic-heartbeat-sound-effect-584627/" target="_blank" rel="noopener">"Intense Cinematic Heartbeat Sound Effect"</a> by LensPulse on Pixabay, used under the Pixabay Content License. Background music: <a href="https://www.youtube.com/watch?v=paRR1vXGgck" target="_blank" rel="noopener">"Horror Ambience Music (Royalty Free) [Quiet]"</a> by ThrillShowX on YouTube, shared royalty free. Click sound: <a href="https://www.youtube.com/watch?v=SVDDJ6woZHQ" target="_blank" rel="noopener">"Small Latch Click SOUND Effect"</a> by SOUND Effects Public Domain (No Copyrights) on YouTube, in the public domain.</p>
+        <div class="actions">
+          <button type="button" class="btn btn-primary" id="play-again-btn">Play again</button>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- Quiet background music, looped by script.js for the whole game after the first click -->
+  <audio id="ambience-audio" src="assets/ambience.mp3" loop preload="auto"></audio>
+  <!-- Faint latch click, played by script.js whenever a button or clue is clicked -->
+  <audio id="click-audio" src="assets/click.wav" preload="auto"></audio>
+  <!-- Looping heartbeat, played by script.js once the loose board is lifted -->
+  <audio id="heartbeat-audio" src="assets/heartbeat.wav" loop preload="auto"></audio>
+
+  <script src="script.js"></script>
+</body>
+</html>

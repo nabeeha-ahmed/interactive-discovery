@@ -1,0 +1,641 @@
+/* The Tell-Tale Heart: styles */
+
+:root {
+  --page-bg: #17100D;
+  --page-text: #E9DDCA;
+  --page-muted: #CDBFA8;
+  --border: #40352B;
+  --border-hover: #6E5E4C;
+
+  --panel-bg: #E7D8BC;
+  --panel-light: #F3E9D8;
+  --panel-shade: #DCCAA8;
+  --panel-text: #241913;
+  --panel-muted: #5A4636;
+  --panel-rule: #C9B796;
+  --bubble-dark: #2E211A;
+
+  --red: #8C302A;
+  --red-dark: #74241F;
+
+  --space-1: 8px;
+  --space-2: 16px;
+  --space-3: 24px;
+  --space-4: 32px;
+
+  color-scheme: dark; /* a single dark look by design */
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  background: var(--page-bg);
+  color: var(--page-text);
+  font-family: "EB Garamond", Garamond, Georgia, "Times New Roman", serif;
+  font-size: 1.1875rem; /* 19px */
+  line-height: 1.55;
+  -webkit-font-smoothing: antialiased;
+}
+
+[hidden] {
+  display: none !important;
+}
+
+h1,
+h2,
+h3 {
+  font-weight: 500;
+  line-height: 1.15;
+  margin: 0;
+}
+
+/* ---------- Header ---------- */
+
+.site-header {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-1) var(--space-2);
+  padding: 14px 5%;
+  border-bottom: 1px solid var(--border);
+}
+
+.site-title {
+  font-weight: 400;
+  font-size: 1.875rem; /* 30px */
+  line-height: 1.2;
+}
+
+.header-controls {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-1);
+}
+
+.restart-confirm {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-1);
+  font-size: 1rem;
+}
+
+/* ---------- Layout ---------- */
+
+.game-container {
+  width: 90%;
+  max-width: 1150px;
+  margin: 0 auto;
+  padding: var(--space-3) 0 var(--space-4);
+}
+
+/* Keep the illustration and the panel beneath it on screen together.
+   The room art is 1.765 times wider than it is tall, so capping its width
+   at 102.4vh keeps it about 58% of the screen height. */
+.frame,
+.scene > .panel {
+  max-width: 102.4vh;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+/* The house art is 1.875 times wider than tall: 97.5vh wide is 52% of the height */
+.house-frame,
+#scene-arrival > .panel,
+#scene-ending > .panel {
+  max-width: 97.5vh;
+}
+
+.frame {
+  border: 1px solid var(--border);
+}
+
+.art-svg {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+.scene {
+  animation: fade-in 0.45s ease-out;
+}
+
+@keyframes fade-in {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+/* ---------- Arrival ---------- */
+
+.title-block {
+  text-align: center;
+  margin-bottom: var(--space-3);
+}
+
+.title-block h1 {
+  font-size: clamp(2.6rem, 8vw, 4.5rem); /* up to 72px */
+  letter-spacing: 0.01em;
+}
+
+.byline {
+  margin: var(--space-1) 0 0;
+  font-style: italic;
+  font-size: 1.125rem;
+  color: var(--page-muted);
+}
+
+/* "How to Play" pop-up, shown when the front door is clicked */
+.how-to {
+  width: min(calc(100% - 32px), 520px);
+  padding: var(--space-3) var(--space-4);
+  border: 1px solid var(--border);
+  background: var(--panel-bg);
+  color: var(--panel-text);
+}
+
+.how-to::backdrop {
+  background: rgba(10, 7, 5, 0.75);
+}
+
+.how-to .actions {
+  flex-direction: row;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-2);
+  margin-bottom: 0;
+}
+
+/* ---------- Narrative panel ---------- */
+
+.panel {
+  background: var(--panel-bg);
+  color: var(--panel-text);
+  padding: var(--space-3) var(--space-4);
+  border: 1px solid var(--border);
+  border-top: 0;
+}
+
+.panel > * {
+  max-width: 66ch;
+}
+
+.panel p,
+.how-to p {
+  margin: 0 0 0.8em;
+}
+
+.panel h2,
+.how-to h2 {
+  font-size: 1.75rem; /* 28px */
+  margin-bottom: 0.5em;
+}
+
+.panel h2:focus {
+  outline: none;
+}
+
+.panel h2:focus-visible {
+  outline: 2px solid var(--red);
+  outline-offset: 4px;
+}
+
+/* "You think" box: what your character makes of a clue */
+.thought {
+  background: var(--panel-shade);
+  padding: 10px 14px;
+}
+
+.thought-label {
+  font-weight: 500;
+}
+
+/* Small italic text is reserved for game guidance */
+.panel .hint {
+  font-size: 0.96875rem;
+  font-style: italic;
+  color: var(--panel-muted);
+  margin-bottom: 0;
+}
+
+.panel .sound-notice {
+  padding: 10px 14px;
+  margin-bottom: 0.8em;
+  border: 1px dashed var(--panel-muted);
+}
+
+.panel-footer {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: var(--space-2);
+  padding-top: var(--space-1);
+  border-top: 1px solid var(--panel-rule);
+}
+
+/* ---------- Conversation bubbles ---------- */
+
+.bubble {
+  position: relative;
+  width: fit-content;
+  max-width: 85%;
+  padding: 10px 16px 12px;
+  margin: 4px 0 20px;
+  border: 1px solid var(--panel-text);
+}
+
+/* The tail under each bubble is a border triangle */
+.bubble::after {
+  content: "";
+  position: absolute;
+  bottom: -11px;
+  border-style: solid;
+}
+
+.panel .bubble p {
+  margin: 0;
+}
+
+.speaker {
+  display: block;
+  font-size: 0.8125rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  margin-bottom: 2px;
+}
+
+/* The man: dark bubble on the left, tail pointing down-left */
+.bubble-him {
+  background: var(--bubble-dark);
+  color: var(--page-text);
+  margin-right: auto;
+}
+
+.bubble-him .speaker {
+  color: var(--panel-rule);
+}
+
+.bubble-him::after {
+  left: 20px;
+  border-width: 11px 12px 0 0;
+  border-color: var(--bubble-dark) transparent transparent transparent;
+}
+
+/* You: light bubble on the right, tail pointing down-right */
+.bubble-you {
+  background: var(--panel-light);
+  color: var(--panel-text);
+  margin-left: auto;
+}
+
+.bubble-you .speaker {
+  color: var(--panel-muted);
+}
+
+.bubble-you::after {
+  right: 20px;
+  border-width: 11px 0 0 12px;
+  border-color: var(--panel-text) transparent transparent transparent;
+}
+
+/* Each line of a conversation appears after the one before it */
+.pop {
+  animation: pop-in 0.35s ease-out both;
+}
+
+@keyframes pop-in {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: none; }
+}
+
+/* ---------- Buttons and choices ---------- */
+
+.actions {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--space-1);
+  margin: var(--space-2) 0;
+}
+
+.btn {
+  font: inherit;
+  font-size: 1.125rem; /* 18px */
+  line-height: 1.3;
+  padding: 9px 18px;
+  border-radius: 0;
+  cursor: pointer;
+  text-align: left;
+}
+
+.btn-primary {
+  background: var(--red);
+  color: var(--panel-light);
+  border: 1px solid var(--red-dark);
+}
+
+.btn-primary:hover {
+  background: var(--red-dark);
+}
+
+.btn-question {
+  background: transparent;
+  color: var(--panel-text);
+  border: 1px solid var(--panel-text);
+}
+
+.btn-question:hover {
+  background: var(--panel-shade);
+}
+
+/* Header controls */
+.btn-quiet {
+  background: transparent;
+  color: var(--page-text);
+  border: 1px solid var(--border);
+  font-size: 1rem;
+  padding: 6px 14px;
+}
+
+.btn-quiet:hover {
+  border-color: var(--border-hover);
+}
+
+/* Link-style buttons: "Leave the house" and "Not yet" */
+.btn-text {
+  font: inherit;
+  font-size: 1rem;
+  background: none;
+  border: 0;
+  padding: 4px 0;
+  color: var(--panel-text);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  cursor: pointer;
+}
+
+.btn:focus-visible,
+.btn-text:focus-visible,
+.attribution a:focus-visible {
+  outline: 2px solid var(--red);
+  outline-offset: 2px;
+}
+
+.site-header .btn:focus-visible {
+  outline-color: var(--page-text);
+}
+
+.panel .choice-prompt {
+  font-weight: 500;
+  margin: 1.2em 0 0;
+}
+
+/* ---------- Back / Next row ---------- */
+
+.panel-nav {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: var(--space-2);
+  margin: var(--space-2) 0;
+}
+
+/* Back and Next: smaller versions of the plain panel button */
+.btn-nav {
+  font-size: 1rem;
+  padding: 6px 18px;
+}
+
+.next-wrap {
+  position: relative;
+  margin-left: auto;
+}
+
+.btn-next:not([aria-disabled="true"]) {
+  background: var(--panel-text);
+  color: var(--panel-bg);
+}
+
+.btn-next:not([aria-disabled="true"]):hover {
+  background: var(--bubble-dark);
+}
+
+/* Locked until the screen's action is done or his answer has appeared */
+.btn-next[aria-disabled="true"] {
+  opacity: 0.55;
+  border-style: dashed;
+  cursor: not-allowed;
+}
+
+.btn-next[aria-disabled="true"]:hover {
+  background: transparent;
+}
+
+/* Tooltip explaining what unlocks Next: on hover, keyboard focus or tap */
+.next-tip {
+  display: none;
+  position: absolute;
+  right: 0;
+  top: calc(100% + 10px);
+  width: max-content;
+  max-width: 240px;
+  padding: 6px 12px;
+  background: var(--bubble-dark);
+  color: var(--page-text);
+  font-size: 0.9375rem;
+  line-height: 1.35;
+  z-index: 2;
+}
+
+.next-tip::after {
+  content: "";
+  position: absolute;
+  right: 22px;
+  bottom: 100%;
+  border-style: solid;
+  border-width: 0 8px 8px 8px;
+  border-color: transparent transparent var(--bubble-dark) transparent;
+}
+
+.next-wrap:hover .next-tip,
+.next-wrap:focus-within .next-tip,
+.next-wrap.show-tip .next-tip {
+  display: block;
+}
+
+/* Lettered options A and B (the letters are added by script.js) */
+.choices {
+  margin-top: var(--space-1);
+}
+
+.choices .btn {
+  display: flex;
+  align-items: baseline;
+  gap: 12px;
+}
+
+.option-letter {
+  flex: none;
+  min-width: 1.6em;
+  padding: 0 0.3em;
+  text-align: center;
+  font-size: 0.875em;
+  font-weight: 500;
+  border: 1px solid currentColor;
+}
+
+/* ---------- Ending ---------- */
+
+.ending {
+  padding-bottom: var(--space-4);
+}
+
+.ending h3 {
+  font-size: 1.25rem;
+  margin: 1.4em 0 0.5em;
+}
+
+.attribution {
+  font-size: 0.9375rem;
+  color: var(--panel-muted);
+}
+
+.attribution a {
+  color: var(--panel-text);
+  text-underline-offset: 3px;
+}
+
+/* ---------- Clickable illustration areas ---------- */
+
+.hotspot.is-lead {
+  cursor: pointer;
+}
+
+/* Objects that are not the current clue cannot be clicked */
+.hotspot:not(.is-lead) .hit {
+  pointer-events: none;
+}
+
+.hotspot:focus {
+  outline: none;
+}
+
+.hit {
+  fill: transparent;
+  stroke: transparent;
+  stroke-width: 4;
+  stroke-dasharray: 12 9;
+}
+
+/* The clue to examine next */
+.hotspot.is-lead .hit {
+  stroke: var(--page-text);
+  stroke-width: 5;
+}
+
+/* Keyboard focus is a solid outline, so it never looks like the dashed clue marker */
+.hotspot:focus-visible .hit {
+  stroke-width: 6;
+  stroke-dasharray: none;
+}
+
+/* ---------- Room states set by script.js ---------- */
+
+.beam,
+.reveal-open,
+.reveal-all {
+  display: none;
+}
+
+.room-frame.lantern-open .beam,
+.room-frame.boards-open .reveal-open,
+.room-frame.boards-removed .reveal-all {
+  display: inline;
+}
+
+.room-frame.boards-open .plank-mid,
+.room-frame.boards-removed .planks,
+.room-frame.boards-removed .reveal-open {
+  display: none;
+}
+
+.pulse {
+  fill: none;
+  stroke: var(--red);
+  stroke-width: 5;
+  opacity: 0;
+  pointer-events: none;
+}
+
+/* Once the floor is the next clue, the loose boards are outlined faintly */
+.room-frame.boards-unlocked .pulse {
+  opacity: 0.35;
+}
+
+.room-frame.heartbeat .pulse {
+  animation: heartbeat var(--beat, 1s) ease-out infinite;
+}
+
+@keyframes heartbeat {
+  0% { opacity: 0.15; }
+  12% { opacity: 0.85; }
+  24% { opacity: 0.3; }
+  36% { opacity: 0.7; }
+  100% { opacity: 0.15; }
+}
+
+/* ---------- Small screens ---------- */
+
+@media (max-width: 640px) {
+  body {
+    font-size: 1.0625rem; /* 17px */
+  }
+
+  .game-container {
+    width: calc(100% - 32px);
+    padding-top: var(--space-2);
+  }
+
+  .site-header {
+    padding: 10px 16px;
+  }
+
+  .site-title {
+    font-size: 1.5rem;
+  }
+
+  .btn-quiet {
+    padding: 6px 10px;
+  }
+
+  .panel {
+    padding: var(--space-2) var(--space-2) var(--space-3);
+  }
+
+  .panel h2 {
+    font-size: 1.5rem;
+  }
+
+  .actions .btn {
+    width: 100%;
+  }
+}
+
+/* ---------- Reduced motion ---------- */
+
+@media (prefers-reduced-motion: reduce) {
+  .scene,
+  .pop {
+    animation: none;
+  }
+
+  .room-frame.heartbeat .pulse {
+    animation: none;
+    opacity: 0.75;
+  }
+}
